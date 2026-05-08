@@ -11,7 +11,11 @@
     },
     {
       "name": "offsets",
-      "ioValue": 10
+      "ioValue": [
+        "1",
+        "2",
+        "8"
+      ]
     },
     {
       "name": "direction",
@@ -39,7 +43,7 @@
     {
       "atomType": "Input",
       "x": 0.025384615384615384,
-      "y": 0.23142857142857146,
+      "y": 0.15384615384615385,
       "uniqueID": "id-26",
       "name": "toMove",
       "type": "geometry"
@@ -47,7 +51,7 @@
     {
       "atomType": "Input",
       "x": 0.025384615384615384,
-      "y": 0.48,
+      "y": 0.24615384615384617,
       "uniqueID": "id-29",
       "name": "offsets",
       "type": "array"
@@ -55,7 +59,7 @@
     {
       "atomType": "Input",
       "x": 0.025384615384615384,
-      "y": 0.7628571428571428,
+      "y": 0.3384615384615385,
       "uniqueID": "id-32",
       "name": "direction",
       "type": "point3d",
@@ -73,7 +77,11 @@
         },
         {
           "name": "offsets",
-          "ioValue": 10
+          "ioValue": [
+            "1",
+            "2",
+            "8"
+          ]
         },
         {
           "name": "direction",
@@ -85,8 +93,8 @@
         }
       ],
       "interpreterVersion": 1,
-      "code": "\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n * \n * Notice that defaults are set for both count and offset.\n */\nfunction move(shape: Assembly, v: [number, number, number]): Assembly | null {\n  return shape.onLeafs((l: Assembly<LeafGeom>) => {\n    const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v)\n    return {\n      ...l,\n      geometry: mvd\n    } as Assembly<LeafGeom>\n  })\n}\n\nfunction run(toMove: Assembly, offsets: number[], direction: number[]) {\n  if (direction.length != 3) {\n    throw new Error(\"Direction needs to be an [x,y,z] vector. Was: \" + direction)\n  }\n  const vec = new replicad.Vector(direction as [number,number,number]).normalize()\n  let leafCount = 0;\n  toMove.onLeafs((l) => {\n    leafCount++;\n    return l;\n  })\n\n  if (leafCount == 1) {\n    const result: (Assembly|null)[]= []\n    offsets.forEach((magnitude) => {\n      result.push(move(toMove, vec.multiply(magnitude).toTuple()))\n    });\n    return result;\n  } else if (leafCount === offsets.length) {\n    let index = 0;\n    return toMove.onLeafs((l) => {\n      const v = vec.multiply(offsets[index]).toTuple()\n      index += 1;\n      const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v)\n      return {\n        ...l,\n        geometry: mvd\n      } as Assembly<LeafGeom>\n    })\n  } else {\n    throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length)\n  }\n}\n",
-      "compiledCode": "\"use strict\";\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n *\n * Notice that defaults are set for both count and offset.\n */\nfunction move(shape, v) {\n    return shape.onLeafs((l) => {\n        const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v);\n        return {\n            ...l,\n            geometry: mvd\n        };\n    });\n}\nfunction run(toMove, offsets, direction) {\n    if (direction.length != 3) {\n        throw new Error(\"Direction needs to be an [x,y,z] vector. Was: \" + direction);\n    }\n    const vec = new replicad.Vector(direction).normalize();\n    let leafCount = 0;\n    toMove.onLeafs((l) => {\n        leafCount++;\n        return l;\n    });\n    if (leafCount == 1) {\n        const result = [];\n        offsets.forEach((magnitude) => {\n            result.push(move(toMove, vec.multiply(magnitude).toTuple()));\n        });\n        return result;\n    }\n    else if (leafCount === offsets.length) {\n        let index = 0;\n        return toMove.onLeafs((l) => {\n            const v = vec.multiply(offsets[index]).toTuple();\n            index += 1;\n            const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v);\n            return {\n                ...l,\n                geometry: mvd\n            };\n        });\n    }\n    else {\n        throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length);\n    }\n}\n"
+      "code": "\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n * \n * Notice that defaults are set for both count and offset.\n */\nfunction move(shape: Assembly, v: [number, number, number]): Assembly | null {\n  return shape.onLeafs((l: Assembly<LeafGeom>) => {\n    const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v)\n    return {\n      ...l,\n      geometry: mvd\n    } as Assembly<LeafGeom>\n  })\n}\n\nfunction run(toMove: Assembly, offsets: number[], direction: number[]) {\n  if (!offsets.length || offsets.length == 0) {\n    throw new Error(\"Missing offsets list\")\n  }\n  if (direction.length != 3) {\n    throw new Error(\"Direction needs to be an [x,y,z] vector. Was: \" + direction)\n  }\n  const vec = new replicad.Vector(direction as [number,number,number]).normalize()\n  let leafCount = 0;\n  toMove.onLeafs((l) => {\n    leafCount++;\n    return l;\n  })\n\n  if (leafCount == 1) {\n    console.log(\"moving single object n times\")\n    const result: (Assembly|null)[]= []\n    offsets.forEach((magnitude) => {\n      result.push(move(toMove, vec.multiply(magnitude).toTuple()))\n    });\n    console.log(result)\n    return result;\n  } else if (leafCount === offsets.length) {\n    console.log(\"moving batch of objects by independent amounts\")\n    let index = 0;\n    return toMove.onLeafs((l) => {\n      const v = vec.multiply(offsets[index]).toTuple()\n      index += 1;\n      const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v)\n      const res = {\n        ...l,\n        geometry: mvd\n      } as Assembly<LeafGeom>\n      console.log(res);\n      return res;\n    })\n  } else {\n    throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length)\n  }\n}\n",
+      "compiledCode": "\"use strict\";\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n *\n * Notice that defaults are set for both count and offset.\n */\nfunction move(shape, v) {\n    return shape.onLeafs((l) => {\n        const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v);\n        return {\n            ...l,\n            geometry: mvd\n        };\n    });\n}\nfunction run(toMove, offsets, direction) {\n    if (!offsets.length || offsets.length == 0) {\n        throw new Error(\"Missing offsets list\");\n    }\n    if (direction.length != 3) {\n        throw new Error(\"Direction needs to be an [x,y,z] vector. Was: \" + direction);\n    }\n    const vec = new replicad.Vector(direction).normalize();\n    let leafCount = 0;\n    toMove.onLeafs((l) => {\n        leafCount++;\n        return l;\n    });\n    if (leafCount == 1) {\n        console.log(\"moving single object n times\");\n        const result = [];\n        offsets.forEach((magnitude) => {\n            result.push(move(toMove, vec.multiply(magnitude).toTuple()));\n        });\n        console.log(result);\n        return result;\n    }\n    else if (leafCount === offsets.length) {\n        console.log(\"moving batch of objects by independent amounts\");\n        let index = 0;\n        return toMove.onLeafs((l) => {\n            const v = vec.multiply(offsets[index]).toTuple();\n            index += 1;\n            const mvd = l.is2D() ? l.geometry.translate([v[0], v[1]]) : l.geometry.translate(v);\n            const res = {\n                ...l,\n                geometry: mvd\n            };\n            console.log(res);\n            return res;\n        });\n    }\n    else {\n        throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length);\n    }\n}\n"
     },
     {
       "atomType": "Rectangle",
