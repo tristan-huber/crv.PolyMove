@@ -1,13 +1,128 @@
 {
-    "atomType": "Molecule",
-    "x": 0,
-    "y": 0,
-    "uniqueID": "id-23",
-    "name": "crv.PolyMove",
-    "topLevel": true,
-    "allAtoms": [],
-    "allConnectors": [],
-    "unitsKey": "Unitless",
-    "fileTypeVersion": 1,
-    "filetypeVersion": 1
+  "atomType": "Molecule",
+  "x": 0,
+  "y": 0,
+  "uniqueID": "id-23",
+  "name": "crv.PolyMove",
+  "ioValues": [
+    {
+      "name": "toMove",
+      "ioValue": "__GEOMETRY_INPUT__"
+    },
+    {
+      "name": "offsets",
+      "ioValue": 10
+    },
+    {
+      "name": "direction",
+      "ioValue": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "topLevel": true,
+  "allAtoms": [
+    {
+      "atomType": "Output",
+      "x": 0.98,
+      "y": 0.5,
+      "uniqueID": "id-24",
+      "ioValues": [
+        {
+          "name": "number or geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ]
+    },
+    {
+      "atomType": "Input",
+      "x": 0.025384615384615384,
+      "y": 0.23142857142857146,
+      "uniqueID": "id-26",
+      "name": "toMove",
+      "type": "geometry"
+    },
+    {
+      "atomType": "Input",
+      "x": 0.025384615384615384,
+      "y": 0.48,
+      "uniqueID": "id-29",
+      "name": "offsets",
+      "type": "array"
+    },
+    {
+      "atomType": "Input",
+      "x": 0.025384615384615384,
+      "y": 0.7628571428571428,
+      "uniqueID": "id-32",
+      "name": "direction",
+      "type": "point3d",
+      "pointValue": null
+    },
+    {
+      "atomType": "Code",
+      "x": 0.39583333333333337,
+      "y": 0.43714285714285717,
+      "uniqueID": "id-35",
+      "ioValues": [
+        {
+          "name": "toMove",
+          "ioValue": "__GEOMETRY_INPUT__"
+        },
+        {
+          "name": "offsets",
+          "ioValue": 10
+        },
+        {
+          "name": "direction",
+          "ioValue": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "interpreterVersion": 1,
+      "code": "\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n * \n * Notice that defaults are set for both count and offset.\n */\nfunction run(toMove: Assembly, offsets: number[], direction: number[]) {\n  let leafCount = 0;\n  toMove.onLeafs((l) => {\n    leafCount++;\n    return l;\n  })\n\n  if (leafCount == 1) {\n\n  } else if (leafCount === offsets.length) {\n\n  } else {\n    throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length)\n  }\n  \n  console.log(offsets);\n  console.log(direction);\n  return toMove;\n}\n",
+      "compiledCode": "\"use strict\";\n/**\n * This code atom implements a simple linear layout funtion which repeats\n * shape count times in the positive X direction with offset space\n * between each. Works for either 2D or 3D shapes. Negative offset\n * and negative counts invert the direction.\n *\n * Notice that defaults are set for both count and offset.\n */\nfunction run(toMove, offsets, direction) {\n    let leafCount = 0;\n    toMove.onLeafs((l) => {\n        leafCount++;\n        return l;\n    });\n    if (leafCount == 1) {\n    }\n    else if (leafCount === offsets.length) {\n    }\n    else {\n        throw new Error(\"Assembly needs to be singleton or match offsets length. Was: \" + leafCount + \" offsets len: \" + offsets.length);\n    }\n    console.log(offsets);\n    console.log(direction);\n    return toMove;\n}\n"
+    },
+    {
+      "atomType": "Rectangle",
+      "x": 0.23828125,
+      "y": 0.27999999999999997,
+      "uniqueID": "id-43",
+      "ioValues": [
+        {
+          "name": "x length",
+          "ioValue": 10
+        },
+        {
+          "name": "y length",
+          "ioValue": 10
+        }
+      ]
+    }
+  ],
+  "allConnectors": [
+    {
+      "ap2Name": "offsets",
+      "ap1ID": "id-29",
+      "ap2ID": "id-35"
+    },
+    {
+      "ap2Name": "direction",
+      "ap1ID": "id-32",
+      "ap2ID": "id-35"
+    },
+    {
+      "ap2Name": "toMove",
+      "ap1ID": "id-43",
+      "ap2ID": "id-35"
+    }
+  ],
+  "unitsKey": "Unitless",
+  "fileTypeVersion": 1,
+  "filetypeVersion": 1
 }
