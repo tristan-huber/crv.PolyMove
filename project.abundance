@@ -175,8 +175,8 @@
         {
           "name": "offsets",
           "ioValue": [
-            "1",
-            "5"
+            2,
+            3
           ]
         },
         {
@@ -205,19 +205,9 @@
       "ap2ID": "id-35"
     },
     {
-      "ap2Name": "offsets",
-      "ap1ID": "id-29",
-      "ap2ID": "id-91"
-    },
-    {
       "ap2Name": "direction",
       "ap1ID": "id-32",
       "ap2ID": "id-35"
-    },
-    {
-      "ap2Name": "direction",
-      "ap1ID": "id-32",
-      "ap2ID": "id-91"
     },
     {
       "ap2Name": "number or geometry",
