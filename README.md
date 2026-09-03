@@ -2,7 +2,7 @@
 
 # crv.PolyMove
 
-![](/project.svg)
+![](/project.png)
 
 ## Inputs
 
